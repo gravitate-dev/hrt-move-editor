@@ -19,6 +19,12 @@ class App():
         self.refresh()
         messagebox.showinfo("Success", "All moves are enabled")
 
+    def disable_all(self):
+        self.mod_controller.disable_everything()
+        self.mod_controller.save()
+        self.refresh()
+        messagebox.showinfo("Success", "Disabled all moves")
+
     def refresh(self):
         self.mod_controller.load(MOD_FOLDER_CONST)
         for mod_list in self.mod_controller.get_mod_lists():
@@ -38,12 +44,11 @@ class App():
     def __init__(self, *args, **kwargs):
         self.mod_controller = ModController()
         root = Tk();
+        root.attributes("-topmost", True)
         root.configure(background='white')
         root.geometry('640x480')
         canvas = Canvas(root, bg='white')
         root.wm_title("Move Editor")
-        #img = Image("photo", file="move_editor.gif")
-        #root.tk.call('wm', 'iconphoto', root._w, img)
 
         style = ttk.Style()
         style.configure("White.TCheckbutton", background="white")
@@ -51,17 +56,21 @@ class App():
 
         top_frame= Frame(root, bg='white')
         top_frame.pack(side=TOP)
-        btn1 = ttk.Button(top_frame, text='Restore', command=self.restore)
+        btn1 = ttk.Button(top_frame, text='Restore All', command=self.restore)
         btn2 = ttk.Button(top_frame, text='Save', command=self.save)
         btn3 = ttk.Button(top_frame, text='Refresh', command=self.refresh)
+        btn4 = ttk.Button(top_frame, text='Disable All', command=self.disable_all)
 
         btn1.configure(style="White.TButton")
         btn2.configure(style="White.TButton")
         btn3.configure(style="White.TButton")
+        btn4.configure(style="White.TButton")
 
-        btn1.pack(side=LEFT,padx=100)
-        btn2.pack(padx=100)
-        btn3.pack()
+        btn1.pack(side=LEFT)
+        btn2.pack(side=RIGHT)
+        btn4.pack(side=LEFT)
+        btn3.pack(side=RIGHT)
+
 
         frame_left = Frame(canvas, bg='white')
 
@@ -139,8 +148,11 @@ def getModFolderPath():
     guess_data_dir = os.getcwd()+os.sep+"data"
     if os.path.exists(guess_data_dir):
         return guess_data_dir
+    root = Tk()
+    root.withdraw()
     ans = filedialog.askdirectory(title='PLEASE select your mod root directory (the /data folder) in your game')
-    Tk().withdraw()
+    root.update()
+    root.destroy()
     return ans
 
 MOD_FOLDER_CONST = ""

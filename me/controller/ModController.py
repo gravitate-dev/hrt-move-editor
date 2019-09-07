@@ -56,6 +56,10 @@ class ModController:
         for mod in self._mod_lists:
             mod.restore_all_moves()
 
+    def disable_everything(self):
+        for mod in self._mod_lists:
+            mod.remove_all_moves()
+
     def _get_mod_by_name(self, mod_filename):
         for mod in self._mod_lists:
             if mod.mod_filename == mod_filename:

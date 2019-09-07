@@ -52,6 +52,9 @@ class MoveListData:
     def restore_all_moves(self):
         self.player_moves_content = self.all_moves_content
 
+    def remove_all_moves(self):
+        self.player_moves_content = {}
+
     def save(self):
         with open(self.full_mod_path, "w") as f:
             json.dump(self.player_moves_content, f, indent=4)
