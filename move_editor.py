@@ -4,7 +4,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 import os
 
-from controller.ModController import ModController
+from me.controller.ModController import ModController
 
 
 class App():
@@ -134,8 +134,16 @@ class App():
 
         root.mainloop()
 
+def getModFolderPath():
+    """ Gets the players full mod path folder"""
+    guess_data_dir = os.getcwd()+os.sep+"data"
+    if os.path.exists(guess_data_dir):
+        return guess_data_dir
+    ans = filedialog.askdirectory(title='PLEASE select your mod root directory (the /data folder) in your game')
+    Tk().withdraw()
+    return ans
+
 MOD_FOLDER_CONST = ""
 if __name__ == "__main__":
-    Tk().withdraw()
-    MOD_FOLDER_CONST = filedialog.askdirectory(title='PLEASE select your mod root directory (the /data folder) in your game')
+    MOD_FOLDER_CONST = getModFolderPath()
     app = App()
