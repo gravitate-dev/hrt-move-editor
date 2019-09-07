@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import filedialog
 import os
 
 from controller.ModController import ModController
@@ -19,7 +20,7 @@ class App():
         messagebox.showinfo("Success", "All moves are enabled")
 
     def refresh(self):
-        self.mod_controller.load("D:\hentai\Enlit3D - Heroinev0.621\data")
+        self.mod_controller.load(MOD_FOLDER_CONST)
         for mod_list in self.mod_controller.get_mod_lists():
             tokens = mod_list.full_mod_path.split(os.sep);
             one_dir_up = tokens[-2] + os.sep + tokens[-1]
@@ -28,8 +29,6 @@ class App():
                 self.tk_mod_data[one_dir_up][move_delta].set(temp[move_delta])
 
     def cb_on_checked(self,mod_label,mod_move):
-        print(mod_label)
-        print(mod_move)
         mod_value = self.tk_mod_data[mod_label][mod_move].get()
         if mod_value==1:
             self.mod_controller.add_move(mod_label,mod_move)
@@ -43,6 +42,9 @@ class App():
         root.geometry('640x480')
         canvas = Canvas(root, bg='white')
         root.wm_title("Move Editor")
+        #img = Image("photo", file="move_editor.gif")
+        #root.tk.call('wm', 'iconphoto', root._w, img)
+
         style = ttk.Style()
         style.configure("White.TCheckbutton", background="white")
         style.configure("White.TButton", background="white")
@@ -94,7 +96,7 @@ class App():
         vertscroll.pack(side=RIGHT, fill=Y)
         canvas.bind('<Configure>', lambda event, canvas_frame=canvas_frame: app_width_resize(event, canvas_frame))
 
-        self.mod_controller.load("D:\hentai\Enlit3D - Heroinev0.621\data")
+        self.mod_controller.load(MOD_FOLDER_CONST)
         self.tk_mod_data = {}
         for mod_list in self.mod_controller.get_mod_lists():
             tokens = mod_list.full_mod_path.split(os.sep);
@@ -107,6 +109,8 @@ class App():
         max_col = 3
 
         for mod_label in self.tk_mod_data:
+            if len(self.tk_mod_data[mod_label])==0:
+                continue
             lbl = Label(frame_left, text=mod_label);
             lbl.grid(sticky=W)
             row = lbl.grid_info()['row'] + 1
@@ -123,13 +127,15 @@ class App():
                                      offvalue=0,command=fn)
                 cb.configure(style="White.TCheckbutton")
                 cb.grid(column=col, row=row, sticky=W, padx=4)
-                if (col == max_col):
+                if (col == max_col-1):
                     row = row + 1
-                col = (col + 1) % (max_col + 1)
+                col = (col + 1) % (max_col)
             row = row + 1
 
         root.mainloop()
 
-
+MOD_FOLDER_CONST = ""
 if __name__ == "__main__":
+    Tk().withdraw()
+    MOD_FOLDER_CONST = filedialog.askdirectory(title='PLEASE select your mod root directory (the /data folder) in your game')
     app = App()

@@ -38,7 +38,7 @@ class ModController:
         chosen_mod = self._get_mod_by_name(mod_filename)
         if chosen_mod == None:
             return
-        chosen_mod.remove_move_from_player(mod_move)
+        return chosen_mod.remove_move_from_player(mod_move)
 
     def add_move(self, mod_filename, mod_move):
         chosen_mod = self._get_mod_by_name(mod_filename)

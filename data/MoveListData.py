@@ -6,7 +6,6 @@ class MoveListData:
     def __init__(self, mod_path):
         self.full_mod_path = mod_path;
         self.mod_filename = mod_path.split(os.sep)[-2]+os.sep+mod_path.split(os.sep)[-1]
-        print(self.mod_filename)
         self.full_mod_backup_path = self.full_mod_path.replace(".json", ".backup.json")
 
         with open(self.full_mod_path) as f:
@@ -17,7 +16,7 @@ class MoveListData:
             with open(self.full_mod_backup_path, "w") as f:
                 json.dump(self.player_moves_content, f, indent=4)
 
-        with open(self.full_mod_path) as f:
+        with open(self.full_mod_backup_path) as f:
             self.all_moves_content = json.load(f);
 
     def get_player_moves(self):
@@ -29,14 +28,26 @@ class MoveListData:
     def get_move_delta(self):
         player = list(self.player_moves_content.keys())
         backup = list(self.all_moves_content.keys())
+        hide_moves =  []
+        for move in backup:
+            if self.is_move_for_device(self.all_moves_content[move]):
+                hide_moves.append(move)
+
         boolean_map = {}
         for move in backup:
+            if (move in hide_moves):
+                continue
             boolean_map[move] = False
         for move in player:
             if move in boolean_map:
+                if (move in hide_moves):
+                    continue
                 boolean_map[move] = True
 
         return boolean_map
+
+    def is_move_for_device(self,move_data):
+        return 'device' in str(move_data['moveData'])
 
     def restore_all_moves(self):
         self.player_moves_content = self.all_moves_content
