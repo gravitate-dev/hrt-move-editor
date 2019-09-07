@@ -5,7 +5,8 @@ import json
 class MoveListData:
     def __init__(self, mod_path):
         self.full_mod_path = mod_path;
-        self.mod_filename = mod_path.split(os.sep)[-1]
+        self.mod_filename = mod_path.split(os.sep)[-2]+os.sep+mod_path.split(os.sep)[-1]
+        print(self.mod_filename)
         self.full_mod_backup_path = self.full_mod_path.replace(".json", ".backup.json")
 
         with open(self.full_mod_path) as f:
